@@ -15,6 +15,7 @@ class Player(Turtle):
     def __init__(self):
         super().__init__(shape="square")
         self.shapesize(PLAYER_HEIGHT, PLAYER_WIDTH)
+        self.name = "player"
         self.setheading(0)
         self.color("white")
         self.penup()

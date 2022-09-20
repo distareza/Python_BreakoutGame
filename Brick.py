@@ -12,8 +12,12 @@ class Brick:
         self.bricks = []
         self.bricks_width = 2
         self.bricks_height = 1
+        self.name = "brick"
         self.screen_width = screen_width
         self.screen_height = screen_height
+
+        self.screen_width = 480
+        self.screen_height = 500
 
     def create_brick(self, pos_x, pos_y, color):
         brick = Turtle(shape="square")

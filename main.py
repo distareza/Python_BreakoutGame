@@ -41,18 +41,16 @@ screen.onkeypress(key="Left", fun=player.move_left)
 while True:
     ball.move()
     if ball.isBallOutOfRange():
-        print(ball.xcor(), ball.ycor(), player.xcor(), player.ycor())
-        print(ball.distance(player))
         print("Game Over")
         break
 
     if ball.hitPlayerBoard(player):
-        ball.bounce(ball.distance(player))
+        ball.bounce(player)
 
     for brick in bricks.bricks:
         if ball.distance(brick) < 20:
+            ball.bounce(brick)
             bricks.hidebrick(brick)
-            ball.bounce(ball.distance(brick))
 
     time.sleep(0.05)
     screen.update()

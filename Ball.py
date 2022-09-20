@@ -32,21 +32,21 @@ class Ball(Turtle):
         angle = self.heading()
 
         # Bounch when hit the wall
-        if x > WALL_FAR_X[1] and x > prevX:
-            if y > prevY:
-                angle += 90
-            else:
-                angle -= 90
-        if x < WALL_FAR_X[0] and x < prevX:
-            if y < prevY:
-                angle += 90
-            else:
-                angle -= 90
-        if y > WALL_FAR_Y[1]:
-            if x > prevX:
-                angle -= 90
-            else:
-                angle += 90
+        if x > WALL_FAR_X[1] :
+            if angle > 0 and angle <= 90:
+                angle = 180 - angle
+            elif angle > 270 and angle <= 360:
+                angle = 360 - angle + 180
+        elif x < WALL_FAR_X[0] :
+            if angle > 90 and angle <= 180:
+                angle = 90 - (angle - 90)
+            elif angle > 180 and angle <= 270:
+                angle = 270 - angle + 270
+        elif y > WALL_FAR_Y[1] and y > prevY:
+                if x > prevX:
+                    angle = 270 + (90 - angle)
+                else:
+                    angle = 270 - (angle - 90)
 
         self.prevY = y
         self.prevX = x
@@ -56,25 +56,48 @@ class Ball(Turtle):
         self.forward(MOVE_DISTANCE)
         self.pendown()
 
-    def bounce(self, point):
+    def bounce(self, board:Turtle):
         x = self.xcor()
         y = self.ycor()
 
         angle = self.heading()
-        if x < self.prevX and y < self.prevY:
-            angle -= 90 + point
+
+        if board.ycor() == -280:
+            # bounce player board
+
+            playerX = board.xcor()
+            playerWidth = board.shapesize()[1]
+            playerXStart = playerX - 20 * (playerWidth / 2)
+            playerXEnd = playerX + 20 * (playerWidth / 2)
+
+            print(x, playerXStart, playerXStart, playerXEnd, angle)
+            angle = (((x - playerXStart) / (playerXStart + playerXEnd)) - 0.5) * 20 + angle
+
+            if angle <= 180:
+                angle = 180 - angle
+            else:
+                angle = 180 - ( angle - 180 )
+
         else:
-            angle += 90 + point
-        # if self.prevy < self.ycor():
-        #     angle += 90
-        # elif self.prevy > self.ycor():
-        #     angle -= 90
-        # self.prevy = y
+            # bounce brick
+            if y > self.prevY:
+                if angle > 180 and angle < 360:
+                    angle = ( 360 - angle ) + 180
+                elif angle <= 90:
+                    angle = 360 - angle
+                else:
+                    angle = -1 * (angle - 360)
+            elif y < self.prevY:
+                if angle >= 270:
+                    angle = 360 - angle
+                elif angle > 180 and angle < 270:
+                    angle = 270 - angle + 90
 
         self.setheading(angle)
         self.penup()
         self.forward(MOVE_DISTANCE)
         self.pendown()
+
 
     def isBallOutOfRange(self):
         return self.ycor() < -300
@@ -96,7 +119,7 @@ class Ball(Turtle):
         playerXEnd = playerX + 20*(playerWidth/2)
 
         distanceY = y - playerY
-        print(x, y, playerY, distanceY, playerXStart, playerXEnd)
+        #print(x, y, playerY, distanceY, playerXStart, playerXEnd)
 
-        return distanceY >=0 and distanceY <= 20 and x >= playerXStart and x <= playerXEnd
+        return distanceY >=0 and distanceY <= 10 and x >= playerXStart and x <= playerXEnd
         #return self.distance(player) < 20
